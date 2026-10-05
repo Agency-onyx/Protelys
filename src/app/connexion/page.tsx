@@ -4,9 +4,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-// Connexion par code reçu par e-mail. Un code plutôt qu'un lien, parce
-// qu'un lien s'ouvre dans Safari et non dans l'app ajoutée à l'écran
-// d'accueil, qui resterait alors déconnectée.
+// Connexion par e-mail. Le message contient un lien, et un code à six
+// chiffres dès qu'un serveur d'envoi (SMTP) est branché sur Supabase.
+// Le code est préférable sur iPhone : un lien s'ouvre dans Safari et non
+// dans l'app ajoutée à l'écran d'accueil.
 export default function Connexion() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -21,7 +22,7 @@ export default function Connexion() {
     setEnCours(true);
     const { error } = await createClient().auth.signInWithOtp({
       email: email.trim(),
-      options: { shouldCreateUser: false },
+      options: { shouldCreateUser: false, emailRedirectTo: `${window.location.origin}/auth/callback` },
     });
     setEnCours(false);
     if (error) {
@@ -79,7 +80,9 @@ export default function Connexion() {
         </form>
       ) : (
         <form onSubmit={verifier} className="space-y-3">
-          <p className="text-sm text-stone-600">Code envoyé à {email}.</p>
+          <p className="text-sm text-stone-600">
+            E-mail envoyé à {email}. Ouvre le lien qu&apos;il contient, ou saisis ici le code s&apos;il y en a un.
+          </p>
           <input
             inputMode="numeric"
             autoComplete="one-time-code"
