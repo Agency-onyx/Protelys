@@ -26,10 +26,13 @@ export default function Connexion() {
     });
     setEnCours(false);
     if (error) {
+      const m = error.message.toLowerCase();
       setErreur(
-        error.message.includes("Signups not allowed")
+        m.includes("signups not allowed")
           ? "Cette adresse ne fait pas partie de l'équipe."
-          : "Envoi impossible pour le moment. Réessaie dans une minute.",
+          : m.includes("rate limit") || m.includes("security purposes") || error.status === 429
+            ? "Un e-mail vient déjà de partir. Utilise le dernier reçu, ou attends quelques minutes."
+            : "Envoi impossible pour le moment. Réessaie dans une minute.",
       );
       return;
     }
