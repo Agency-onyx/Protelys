@@ -31,7 +31,7 @@ export default function Connexion() {
         m.includes("signups not allowed")
           ? "Cette adresse ne fait pas partie de l'équipe."
           : m.includes("rate limit") || m.includes("security purposes") || error.status === 429
-            ? "Un e-mail vient déjà de partir. Utilise le dernier reçu, ou attends quelques minutes."
+            ? "Trop d'e-mails envoyés pour le moment. Réessaie dans une heure."
             : "Envoi impossible pour le moment. Réessaie dans une minute.",
       );
       return;
